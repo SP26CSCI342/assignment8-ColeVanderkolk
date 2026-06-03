@@ -241,9 +241,6 @@ app.post("/api/logout", (req, res) => {
   return res.status(200).json({ message: "Logged out." });
 });
 
-// ============================================================
-// GET /api/health
-// ============================================================
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
@@ -252,7 +249,39 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 fallback — must come AFTER every route or it'll eat them.
+app.get("/api/yelp/businesses/search", async (req, res) => {
+  const { term, location, sort_by, limit } = req.query;
+  const yelpKey = process.env.YELP_API_KEY;
+
+  if (!yelpKey) {
+    return res.status(500).json({ error: "YELP_API_KEY not configured" });
+  }
+
+  try {
+    const yelpUrl = new URL("https://api.yelp.com/v3/businesses/search");
+    yelpUrl.searchParams.append("term", term || "restaurants");
+    yelpUrl.searchParams.append("location", location || "San Francisco");
+    yelpUrl.searchParams.append("sort_by", sort_by || "best_match");
+    yelpUrl.searchParams.append("limit", limit || "20");
+
+    const yelpRes = await fetch(yelpUrl.toString(), {
+      headers: {
+        Authorization: `Bearer ${yelpKey}`,
+      },
+    });
+
+    if (!yelpRes.ok) {
+      return res.status(yelpRes.status).json({ error: "Yelp API error" });
+    }
+
+    const data = await yelpRes.json();
+    return res.json(data);
+  } catch (error) {
+    console.error("Yelp proxy error:", error);
+    return res.status(500).json({ error: "Server error proxying to Yelp" });
+  }
+});
+
 app.use((req, res) => {
   return res.status(404).json({ error: "Route not found." });
 });
