@@ -1,0 +1,14 @@
+@import './assets/reset.css';
+@import "tailwindcss";
+body {
+font-family: 'Work Sans', sans-serif;
+background-color: #f8f8f8;
+color: #333;
+}
+title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1e2126;
+    text-align: center;
+    margin: 2rem 0;
+}   
