@@ -3,7 +3,7 @@ import Navigation from '../Navigation/Navigation';
 import HomePage from '../../pages/HomePage';
 import LoginForm from '../../forms/LoginForm';
 import SignupForm from '../../forms/SignupForm';
-import Profile from '../../pages/profile';
+import Profile from '../../pages/Profile';
 import PageNotFound from '../../pages/PageNotFound';
 import './App.css';
 
